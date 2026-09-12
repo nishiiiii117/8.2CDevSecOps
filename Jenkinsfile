@@ -15,6 +15,18 @@ pipeline {
                 echo 'Run unit tests and integration tests'
                 echo 'Tool: JUnit'
             }
+            post {
+                always {
+                    emailext(
+                        subject: "Jenkins - Tests - Build #${env.BUILD_NUMBER}",
+                        body: """Stage: Unit and Integration Tests
+Status: ${currentBuild.currentResult}
+Build: ${env.BUILD_URL}""",
+                        to: "nishitapradeep117@gmail.com",
+                        attachLog: true
+                    )
+                }
+            }
         }
 
         stage('Code Analysis') {
@@ -28,6 +40,18 @@ pipeline {
             steps {
                 echo 'Scan the code for security vulnerabilities'
                 echo 'Tool: OWASP Dependency-Check'
+            }
+            post {
+                always {
+                    emailext(
+                        subject: "Jenkins - Security Scan - Build #${env.BUILD_NUMBER}",
+                        body: """Stage: Security Scan
+Status: ${currentBuild.currentResult}
+Build: ${env.BUILD_URL}""",
+                        to: "nishitapradeep117@gmail.com",
+                        attachLog: true
+                    )
+                }
             }
         }
 
